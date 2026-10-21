@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>Enregistrement client</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17243b;
+      --muted: #68758a;
+      --line: #dce3ed;
+      --blue: #315fe8;
+      --blue-dark: #244bc4;
+      --surface: #fff;
+      --page: #f5f7fb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 52px 20px;
+      background: var(--page);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .layout { width: min(100%, 920px); margin: 0 auto; }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: .76rem;
+      font-weight: 750;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 2.45rem); letter-spacing: -.045em; }
+    .intro { margin: 10px 0 28px; color: var(--muted); line-height: 1.6; }
+    .card {
+      overflow: hidden;
+      border: 1px solid #e8edf4;
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: 0 16px 45px rgb(35 54 85 / 8%);
+    }
+    form { padding: clamp(22px, 5vw, 40px); }
+    fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+    fieldset + fieldset { margin-top: 32px; padding-top: 29px; border-top: 1px solid #edf0f5; }
+    legend { width: 100%; margin-bottom: 20px; font-size: 1.05rem; font-weight: 720; }
+    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 19px 20px; }
+    .field { display: flex; min-width: 0; flex-direction: column; gap: 8px; }
+    .field.full { grid-column: 1 / -1; }
+    label, .label { font-size: .88rem; font-weight: 650; }
+    .optional { color: var(--muted); font-size: .78rem; font-weight: 450; }
+    input, select, textarea {
+      width: 100%;
+      min-height: 47px;
+      padding: 11px 13px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      outline: none;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-size: .93rem;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    textarea { min-height: 94px; resize: vertical; }
+    input::placeholder, textarea::placeholder { color: #9aa5b5; }
+    input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgb(49 95 232 / 13%); }
+    .check-row { display: flex; align-items: flex-start; gap: 10px; color: #43516a; font-size: .86rem; line-height: 1.5; }
+    .check-row input { width: 17px; min-height: 17px; height: 17px; margin: 2px 0 0; accent-color: var(--blue); }
+    .actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 30px; }
+    .hint { margin: 0; color: var(--muted); font-size: .78rem; }
+    button {
+      min-height: 48px;
+      padding: 0 21px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--blue);
+      color: white;
+      font: inherit;
+      font-size: .92rem;
+      font-weight: 680;
+      cursor: pointer;
+      transition: background .15s, transform .15s;
+    }
+    button:hover { background: var(--blue-dark); }
+    button:active { transform: translateY(1px); }
+    button:focus-visible { outline: 3px solid rgb(49 95 232 / 30%); outline-offset: 3px; }
+    .notice { display: none; margin: 0 0 20px; padding: 13px 15px; border-radius: 9px; background: #eaf7ef; color: #1e6b3c; font-size: .9rem; }
+    .notice.visible { display: block; }
+    @media (max-width: 620px) {
+      body { padding: 34px 15px; }
+      .fields { grid-template-columns: 1fr; gap: 16px; }
+      .field.full { grid-column: auto; }
+      .actions { align-items: stretch; flex-direction: column-reverse; }
+      button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="layout">
+    <p class="eyebrow">Espace client</p>
+    <h1>Enregistrer un client</h1>
+    <p class="intro">Renseignez les informations ci-dessous pour créer une nouvelle fiche client.</p>
+
+    <section class="card" aria-label="Formulaire d’enregistrement client">
+      <form id="client-form">
+        <p class="notice" id="success-message" role="status" aria-live="polite">La fiche client a bien été enregistrée.</p>
+        <fieldset>
+          <legend>Informations personnelles</legend>
+          <div class="fields">
+            <div class="field">
+              <label for="first-name">Prénom <span aria-hidden="true">*</span></label>
+              <input id="first-name" name="firstName" type="text" autocomplete="given-name" placeholder="Ex. Marie" required>
+            </div>
+            <div class="field">
+              <label for="last-name">Nom <span aria-hidden="true">*</span></label>
+              <input id="last-name" name="lastName" type="text" autocomplete="family-name" placeholder="Ex. Dupont" required>
+            </div>
+            <div class="field">
+              <label for="email">Adresse e-mail <span aria-hidden="true">*</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="marie@exemple.fr" required>
+            </div>
+            <div class="field">
+              <label for="phone">Téléphone <span class="optional">(facultatif)</span></label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+33 6 12 34 56 78">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Coordonnées</legend>
+          <div class="fields">
+            <div class="field full">
+              <label for="address">Adresse <span class="optional">(facultatif)</span></label>
+              <input id="address" name="address" type="text" autocomplete="street-address" placeholder="Numéro et nom de rue">
+            </div>
+            <div class="field">
+              <label for="postal-code">Code postal <span class="optional">(facultatif)</span></label>
+              <input id="postal-code" name="postalCode" type="text" autocomplete="postal-code" placeholder="75001">
+            </div>
+            <div class="field">
+              <label for="city">Ville <span class="optional">(facultatif)</span></label>
+              <input id="city" name="city" type="text" autocomplete="address-level2" placeholder="Paris">
+            </div>
+            <div class="field">
+              <label for="country">Pays <span class="optional">(facultatif)</span></label>
+              <select id="country" name="country" autocomplete="country-name">
+                <option value="">Sélectionner un pays</option>
+                <option>France</option>
+                <option>Belgique</option>
+                <option>Suisse</option>
+                <option>Canada</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="customer-type">Type de client</label>
+              <select id="customer-type" name="customerType">
+                <option value="particulier">Particulier</option>
+                <option value="professionnel">Professionnel</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="notes">Notes <span class="optional">(facultatif)</span></label>
+              <textarea id="notes" name="notes" placeholder="Ajoutez une information utile sur ce client…"></textarea>
+            </div>
+            <label class="check-row field full">
+              <input type="checkbox" name="contactConsent">
+              <span>J’accepte de recevoir des informations et des offres par e-mail.</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <p class="hint"><span aria-hidden="true">*</span> Champs obligatoires</p>
+          <button type="submit">Enregistrer le client</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <script>
+    const form = document.querySelector('#client-form');
+    const successMessage = document.querySelector('#success-message');
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      successMessage.classList.add('visible');
+      successMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  </script>
+</body>
+</html>
